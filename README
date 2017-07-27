@@ -1,0 +1,15 @@
+Commands and code to generate initial condition files for 3 MOM ocean grids from 
+World Ocean Atlas 13 (WOA) data.
+
+Each directory contains a script, makeic which uses Nic Hannah's ocean-ic code 
+to interpolate the salt and temperature fields on to the 3D MOM ocean grids.
+
+Run
+
+./make_inital_conditions.sh
+
+to generate initial conditions files for all three grids
+
+- Aidan Heerdegen (aidan.heerdegen@anu.edu.au)
+
+27-07-2017
