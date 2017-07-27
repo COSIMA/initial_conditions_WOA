@@ -1,0 +1,22 @@
+#!/bin/bash
+#PBS -P v45
+#PBS -q express
+#PBS -l mem=64Gb
+#PBS -l walltime=1:00:00
+#PBS -l jobfs=400GB
+#PBS -l ncpus=8
+#PBS -l wd
+
+module purge
+module use /g/data3/hh5/public/modules
+module load conda/analysis3
+module load esmf
+module load openmpi
+
+ln -sf /g/data1/ua8/MOM/initial_conditions/WOA/woa13_decav_ts_jan_04v2.nc input.nc
+ln -sf /short/v45/aph502/mom/input/mom025/mosaic/ocean_hgrid.nc ocean_hgrid.nc 
+ln -sf /short/v45/aph502/mom/input/mom025/levels_50/ocean_vgrid.nc ocean_vgrid.nc
+
+PATH=../ocean-ic/:$PATH
+
+makeic.py --use_mpi WOA input.nc input.nc input.nc input.nc MOM ocean_hgrid.nc ocean_vgrid.nc ocean_temp_salt.res.nc
