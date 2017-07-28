@@ -13,9 +13,13 @@ module load conda/analysis3
 module load esmf
 module load openmpi
 
+GRIDDIR='/g/data1/ua8/MOM/grids/025'
+
 ln -sf /g/data1/ua8/MOM/initial_conditions/WOA/woa13_decav_ts_jan_04v2.nc input.nc
-ln -sf /short/v45/aph502/mom/input/mom025/mosaic/ocean_hgrid.nc ocean_hgrid.nc 
-ln -sf /short/v45/aph502/mom/input/mom025/levels_50/ocean_vgrid.nc ocean_vgrid.nc
+ln -sf $GRIDDIR/ocean_hgrid.nc ocean_hgrid.nc
+ln -sf $GRIDDIR/ocean_vgrid.nc ocean_vgrid.nc
+
+md5sum -c md5sum.txt || exit
 
 PATH=../ocean-ic/:$PATH
 
