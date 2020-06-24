@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -P v45
+#PBS -P x77
 #PBS -q express
 #PBS -l mem=64Gb
 #PBS -l walltime=1:00:00
@@ -14,13 +14,19 @@ module load esmf
 module load openmpi
 
 GRIDDIR='/g/data1/ua8/MOM/grids/025'
-
-ln -sf /g/data1/ua8/MOM/initial_conditions/WOA/woa13_decav_ts_jan_04v2.nc input.nc
-ln -sf $GRIDDIR/ocean_hgrid.nc ocean_hgrid.nc
-ln -sf $GRIDDIR/ocean_vgrid.nc ocean_vgrid.nc
-
-md5sum -c md5sum.txt || exit
+ln -sf $GRIDDIR/mosaic/ocean_hgrid.nc ocean_hgrid.nc 
+ln -sf $GRIDDIR/topog/GFDL50/ocean_vgrid.nc ocean_vgrid.nc
 
 PATH=../ocean-ic/:$PATH
 
-makeic.py --use_mpi WOA input.nc input.nc input.nc input.nc MOM ocean_hgrid.nc ocean_vgrid.nc ocean_temp_salt.res.nc
+#ln -sf /g/data1/ua8/MOM/initial_conditions/WOA/woa13_decav_ts_jan_04v2.nc input.nc
+for((i=1; i<=12; i++))
+do
+printf -v mon "%02d"  "${i}"
+echo /g/data3/hh5/tmp/cosima/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc
+ln -sf /g/data3/hh5/tmp/cosima/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc input.nc
+
+#md5sum -c md5sum.txt || exit
+
+makeic.py --use_mpi WOA input.nc input.nc input.nc input.nc MOM ocean_hgrid.nc ocean_vgrid.nc /g/data3/hh5/tmp/cosima/woa13/025/woa13_ts_"${mon}"_mom025.nc
+done
