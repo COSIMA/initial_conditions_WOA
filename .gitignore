@@ -1,0 +1,4 @@
+*.nc
+*/PET[0-9].RegridWeightGen.Log
+*/make_ic.[oe][0-9]*
+
