@@ -1,32 +1,38 @@
 #!/bin/bash
 #PBS -P x77
-#PBS -q express
+#PBS -q normal
 #PBS -l mem=64Gb
-#PBS -l walltime=12:00:00
+#PBS -l walltime=10:00:00
 #PBS -l jobfs=400GB
 #PBS -l ncpus=8
 #PBS -l wd
+#PBS -lstorage=gdata/hh5+gdata/ik11
 
 module purge
-module use /g/data3/hh5/public/modules
+module use /g/data/hh5/public/modules
 module load conda/analysis3
 module load esmf
-module load openmpi
+#module load openmpi/4.0.2
 
-GRIDDIR='/g/data1/ua8/MOM/grids/01'
-ln -sf $GRIDDIR/mosaic/ocean_hgrid.nc ocean_hgrid.nc
-ln -sf $GRIDDIR/mosaic/ocean_vgrid.nc ocean_vgrid.nc
+#GRIDDIR='/g/data/ua8/MOM/grids/01'
+#ln -sf $GRIDDIR/mosaic/ocean_hgrid.nc ocean_hgrid.nc
+#ln -sf $GRIDDIR/mosaic/ocean_vgrid.nc ocean_vgrid.nc
+GRIDDIR='/g/data/ik11/inputs/access-om2/input_rc/mom_01deg'
+ln -sf $GRIDDIR/ocean_hgrid.nc ocean_hgrid.nc
+ln -sf $GRIDDIR/ocean_vgrid.nc ocean_vgrid.nc
 
 PATH=../ocean-ic/:$PATH
+#PATH=/scratch/v45/raf599/esmf/apps/appsO/Linux.intel.64.openmpi.default/:$PATH  # for Russ' ESMF_RegridWeightGen
 
 #ln -sf /g/data1/ua8/MOM/initial_conditions/WOA/woa13_decav_ts_jan_04v2.nc input.nc
 for((i=1; i<=12; i++))
 do
 printf -v mon "%02d"  "${i}"
-echo /g/data3/hh5/tmp/cosima/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc
-ln -sf /g/data3/hh5/tmp/cosima/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc input.nc
+echo /g/data/ik11/inputs/access-om2/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc
+ln -sf /g/data/ik11/inputs/access-om2/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc input.nc
 
 #md5sum -c md5sum.txt || exit
 
-makeic.py --use_mpi WOA input.nc input.nc input.nc input.nc MOM ocean_hgrid.nc ocean_vgrid.nc /g/data3/hh5/tmp/cosima/woa13/01/woa13_ts_"${mon}"_mom01.nc
+mkdir -p /g/data/ik11/inputs/access-om2/woa13/01
+makeic.py --use_mpi WOA input.nc input.nc input.nc input.nc MOM ocean_hgrid.nc ocean_vgrid.nc /g/data/ik11/inputs/access-om2/woa13/01/woa13_ts_"${mon}"_mom01.nc
 done

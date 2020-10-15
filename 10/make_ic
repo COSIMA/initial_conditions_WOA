@@ -1,32 +1,37 @@
 #!/bin/bash
 #PBS -P x77
-#PBS -q express
+#PBS -q normal
 #PBS -l mem=64Gb
-#PBS -l walltime=1:00:00
+#PBS -l walltime=2:00:00
 #PBS -l jobfs=400GB
 #PBS -l ncpus=8
 #PBS -l wd
+#PBS -lstorage=gdata/hh5+gdata/ik11
 
 module purge
-module use /g/data3/hh5/public/modules
+module use /g/data/hh5/public/modules
 module load conda/analysis3
 module load esmf
-module load openmpi
+#module load openmpi/4.0.2
 
-GRIDDIR='/g/data1/ua8/MOM/grids/10'
-ln -sf $GRIDDIR/mosaic/ocean_hgrid.nc ocean_hgrid.nc 
-ln -sf $GRIDDIR/topog/GFDL50/ocean_vgrid.nc ocean_vgrid.nc
+#GRIDDIR='/g/data/ua8/MOM/grids/10'
+#ln -sf $GRIDDIR/mosaic/ocean_hgrid.nc ocean_hgrid.nc
+#ln -sf $GRIDDIR/topog/GFDL50/ocean_vgrid.nc ocean_vgrid.nc
+GRIDDIR='/g/data/ik11/inputs/access-om2/input_rc/mom_1deg'
+ln -sf $GRIDDIR/ocean_hgrid.nc ocean_hgrid.nc
+ln -sf $GRIDDIR/ocean_vgrid.nc ocean_vgrid.nc
 
 PATH=../ocean-ic/:$PATH
 
 #ln -sf /g/data1/ua8/MOM/initial_conditions/WOA/woa13_decav_ts_jan_04v2.nc input.nc
-for((i=6; i<=12; i++))
+for((i=1; i<=12; i++))
 do
 printf -v mon "%02d"  "${i}"
-echo /g/data3/hh5/tmp/cosima/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc
-ln -sf /g/data3/hh5/tmp/cosima/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc input.nc
+echo /g/data/ik11/inputs/access-om2/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc
+ln -sf /g/data/ik11/inputs/access-om2/woa13/monthly/woa13_decav_ts_"${mon}"_04v2.nc input.nc
 
 #md5sum -c md5sum.txt || exit
 
-makeic.py --use_mpi WOA input.nc input.nc input.nc input.nc MOM ocean_hgrid.nc ocean_vgrid.nc /g/data3/hh5/tmp/cosima/woa13/10/woa13_ts_"${mon}"_mom10.nc
+mkdir -p /g/data/ik11/inputs/access-om2/woa13/10
+makeic.py --use_mpi WOA input.nc input.nc input.nc input.nc MOM ocean_hgrid.nc ocean_vgrid.nc /g/data/ik11/inputs/access-om2/woa13/10/woa13_ts_"${mon}"_mom10.nc
 done
