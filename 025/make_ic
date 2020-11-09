@@ -17,7 +17,7 @@ module load esmf
 #GRIDDIR='/g/data/ua8/MOM/grids/025'
 #ln -sf $GRIDDIR/mosaic/ocean_hgrid.nc ocean_hgrid.nc
 #ln -sf $GRIDDIR/topog/GFDL50/ocean_vgrid.nc ocean_vgrid.nc
-GRIDDIR='/g/data/ik11/inputs/access-om2/input_rc/mom_025deg'
+GRIDDIR='/g/data/ik11/inputs/access-om2/input_20201022/mom_025deg'
 ln -sf $GRIDDIR/ocean_hgrid.nc ocean_hgrid.nc
 ln -sf $GRIDDIR/ocean_vgrid.nc ocean_vgrid.nc
 
